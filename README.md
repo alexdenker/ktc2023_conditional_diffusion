@@ -17,7 +17,10 @@ We provide the `enviroment.yml` file to restore the conda enviroment used for th
 conda env create -f environment.yml
 ```
 
-The network weights are stored at **upload files here**. The script `main.py` can be used reconstruct phantoms: 
+The network weights are stored [here](https://seafile.zfn.uni-bremen.de/d/59c291e4bf7d4064a1be/). They have to be stored in *diffusion_models/level_{level}/model.pt*.  We precomputed the Jacobian for an empty watertank, as well as some other matrices (smoothness regulariser, node coordinates). This eliminates the need to install Fenics in the enviroment. All of these matrices are available [here](https://seafile.zfn.uni-bremen.de/d/9108bc95b2e84cd285f8/). and have to be stored in *data/*.
+
+
+The script `main.py` can be used reconstruct phantoms: 
 
 ```
 python main.py /path_to_input_folder /path_to_ouput_folder difficulty_level
@@ -47,10 +50,12 @@ We use a combination of three different priors, where $R_\text{SM}$ denotes a [s
 
 In total, we use five different combinations of $\alpha_1, \alpha_2$ and $\alpha_3$ as each regularisation results in different artifacts in the reconstruction. This means, that our conditional input, interpolated to the pixel grid, is of the size $5 \times 256 \times 256$. 
 
-
 ### Training
 
 ### Forward Operator 
+
+For simulation, we used the forward operator provided by the organisers with the dense mesh. For the reconstruction process, we implemented the complete electrode model in Fenics
+
 
 ### Synthetic Training Data
 
