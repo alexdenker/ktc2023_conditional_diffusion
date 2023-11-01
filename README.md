@@ -27,9 +27,7 @@ The script `main.py` can be used to reconstruct phantoms:
 python main.py /path_to_input_folder /path_to_ouput_folder difficulty_level
 ```
 
-
 ### Enviroment
-
 
 ## Method
 
