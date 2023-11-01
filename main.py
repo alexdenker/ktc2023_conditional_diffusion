@@ -9,6 +9,7 @@ from pathlib import Path
 
 from configs.default_config import get_default_configs
 from src import get_standard_score, get_standard_sde, wrapper_ddim, BaseSampler, LinearisedRecoFenics
+from src import 
 
 # regularisation parameters for initial reconstruction 
 level_to_alphas = {
@@ -21,6 +22,17 @@ level_to_alphas = {
     7 : [[40000, 0.,0.],[0., 682.105, 0.],[0.,0.1,18.421],[40000/3., 687.3684/3.,18.421/3.], [6e5, 30,22]], 
 }
 
+# hyperparameters for conditional sampling
+# 01.11.2023
+level_to_hparams = {
+    1: {'eta':0.01, 'num_samples': 60, 'num_steps': 10, 'use_ema':True},
+    2: {'eta':0.01, 'num_samples': 60, 'num_steps': 10, 'use_ema':False},
+    3: {'eta':0.3, 'num_samples': 10, 'num_steps': 20, 'use_ema':False},
+    4: {'eta':0.9, 'num_samples': 10, 'num_steps': 100, 'use_ema':False},
+    5: {'eta':0.1, 'num_samples': 25, 'num_steps': 100, 'use_ema':True},
+    6: {'eta':0.1, 'num_samples': 25, 'num_steps': 100, 'use_ema':True},
+    7: {'eta':0.8, 'num_samples': 15, 'num_steps': 100, 'use_ema':False},
+}
 
 
 parser = argparse.ArgumentParser(description='reconstruction using conditional diffusion')
@@ -45,11 +57,17 @@ def coordinator(args):
     sde = get_standard_sde(config=config)
     score = get_standard_score(config=config, sde=sde, use_ema=False, load_model=False)
 
+    sampling_params = level_to_hparams[level]
+
+
     score.load_state_dict(torch.load(f"diffusion_models/level_{level}/version_01/model_training.pt"))
+    if sampling_params["use_ema"]:
+        ema = ExponentialMovingAverage(score.parameters(), decay=0.999)
+        ema.load_state_dict(torch.load(f"diffusion_models/level_{level}/version_01/ema_model_training.pt"))
+        ema.copy_to(score.parameters())
+
     score.to(device)
     score.eval() 
-
-    num_samples = 10 
 
     sampler = BaseSampler(
         score=score,
@@ -58,16 +76,15 @@ def coordinator(args):
         corrector=None,
         init_chain_fn=None,
         sample_kwargs={
-            'num_steps': 10, # 100
+            'num_steps': sampling_params["num_steps"], 
             'start_time_step': 0,
-            'batch_size': num_samples,
+            'batch_size': sampling_params["num_samples"],
             'im_shape': [1,256,256],
             'travel_length': 1, 
             'travel_repeat': 1, 
-            'predictor': {'eta' : 0.9}
+            'predictor': {'eta' : sampling_params["eta"]}
             },
         device=device)
-
 
     ### read files from args.input_folder 
     # there will be ref.mat in the input_folder, dont process this 
