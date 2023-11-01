@@ -7,17 +7,8 @@ import numpy as np
 from scipy.stats import mode
 from pathlib import Path 
 
-# only for testing 
-import matplotlib.pyplot as plt 
-
 from configs.default_config import get_default_configs
 from src import get_standard_score, get_standard_sde, wrapper_ddim, BaseSampler, LinearisedRecoFenics
-
-# This hardcoded path will change 
-path_to_model = {
-    1: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01/model_training.pt"
-}
-
 
 # regularisation parameters for initial reconstruction 
 level_to_alphas = {
@@ -54,7 +45,7 @@ def coordinator(args):
     sde = get_standard_sde(config=config)
     score = get_standard_score(config=config, sde=sde, use_ema=False, load_model=False)
 
-    score.load_state_dict(torch.load(path_to_model[level]))
+    score.load_state_dict(torch.load(f"diffusion_models/level_{level}/version_01/model_training.pt"))
     score.to(device)
     score.eval() 
 
