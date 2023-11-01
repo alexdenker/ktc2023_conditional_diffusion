@@ -11,7 +11,7 @@ For this submission, we developed a **conditional diffusion model** for EIT segm
 
 ## Usage
 
-We provide the `enviroment.yml` file to restore the conda enviroment used for the submission. You can create the enviroment using the following command:
+We provide the `enviroment.yml` file to restore the conda enviroment used for the submission. You can create the environment using the following command:
 
 ```
 conda env create -f environment.yml
