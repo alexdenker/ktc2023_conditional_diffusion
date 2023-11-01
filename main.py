@@ -9,7 +9,7 @@ from pathlib import Path
 
 from configs.default_config import get_default_configs
 from src import get_standard_score, get_standard_sde, wrapper_ddim, BaseSampler, LinearisedRecoFenics
-from src import 
+from src import ExponentialMovingAverage
 
 # regularisation parameters for initial reconstruction 
 level_to_alphas = {
