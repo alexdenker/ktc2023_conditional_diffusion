@@ -1,6 +1,6 @@
 # Submission to the KTC 2023
 
-For this submission we developed a **conditional diffusion model** for EIT segmentation. The conditional diffusion model is trained on a dataset of synthetic phantoms and simulated measurements.
+For this submission, we developed a **conditional diffusion model** for EIT segmentation. The conditional diffusion model is trained on a dataset of synthetic phantoms and simulated measurements.
 
 # Table of contents 
 1. [Usage](#usage)
@@ -17,10 +17,11 @@ We provide the `enviroment.yml` file to restore the conda enviroment used for th
 conda env create -f environment.yml
 ```
 
-The network weights are stored [here](https://seafile.zfn.uni-bremen.de/d/59c291e4bf7d4064a1be/). They have to be stored in *diffusion_models/level_{level}/model.pt*.  We precomputed the Jacobian for an empty watertank, as well as some other matrices (smoothness regulariser, node coordinates). This eliminates the need to install Fenics in the enviroment. All of these matrices are available [here](https://seafile.zfn.uni-bremen.de/d/9108bc95b2e84cd285f8/). and have to be stored in *data/*.
+The network weights are stored [here](https://seafile.zfn.uni-bremen.de/d/59c291e4bf7d4064a1be/). They have to be loaded into *diffusion_models/level_{level}/model.pt*.
+ We precomputed the Jacobian for an empty water tank, as well as some other matrices (smoothness regulariser, node coordinates). This eliminates the need to install FEniCS in the environment. All of these matrices are available [here](https://seafile.zfn.uni-bremen.de/d/9108bc95b2e84cd285f8/) and have to be stored in *data/*.
 
 
-The script `main.py` can be used reconstruct phantoms: 
+The script `main.py` can be used to reconstruct phantoms: 
 
 ```
 python main.py /path_to_input_folder /path_to_ouput_folder difficulty_level
@@ -36,7 +37,7 @@ Our goal is to train a [conditional diffusion model](https://arxiv.org/abs/2111.
 
 $$ s_\theta(\sigma, t, c) \approx \nabla_\sigma \log p_t(\sigma | c) $$
 
-to approximate the conditional score function. Here, $\sigma$ denotes the conductivity map (interpolated to the $256 \times 256$ pixel grid), $t$ the current time step and $c$ the conditional input. Note, that we do not use the raw measurements $U$ directly as the conditional input. Instead, we use an initial reconstruction method $\mathcal{R}$ and make use the initial reconstruction $\mathcal{R}(U)$. Further, this initial reconstruction is interpolated to the $256 \times 256$ pixel grid. This has the practical advantage that we can implement the diffusion model as a convolutional neural network and are independent of the underlying mesh. 
+to approximate the conditional score function. Here, $\sigma$ denotes the conductivity map (interpolated to the $256 \times 256$ pixel grid), $t$ the current time step and $c$ the conditional input. Note, that we do not use the raw measurements $U$ directly as the conditional input. Instead, we use an initial reconstruction method $\mathcal{R}$ and make use of the initial reconstruction $\mathcal{R}(U)$. Further, this initial reconstruction is interpolated to the $256 \times 256$ pixel grid. This has the practical advantage that we can implement the diffusion model as a convolutional neural network and are independent of the underlying mesh. 
 
 ### Initial Reconstructions
 
@@ -54,8 +55,7 @@ In total, we use five different combinations of $\alpha_1, \alpha_2$ and $\alpha
 
 ### Forward Operator 
 
-For simulation, we used the forward operator provided by the organisers with the dense mesh. For the reconstruction process, we implemented the complete electrode model in Fenics
-
+For simulation, we used the forward operator provided by the organisers with the dense mesh. For the reconstruction process and the creation of the training dataset, we implemented the complete electrode model and the linearized Jacobian matrix in FEniCS to use our own mesh and speed up the calculations. Here, we use continuous piece wise linear functions for the potential and piece wise constant functions for the reconstruction of the conductivity. 
 
 ### Synthetic Training Data
 
