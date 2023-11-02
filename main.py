@@ -35,13 +35,13 @@ level_to_hparams = {
 }
 
 level_to_model_path = { 
-    1: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01", #"diffusion_models/level_1/version_01/",
-    2: "",
-    3: "",
-    4: "",
-    5: "",
-    6: "",
-    7: ""
+    1: "diffusion_models/level_1/version_01/",   # /localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01"
+    2: "diffusion_models/level_2/version_01/",
+    3: "diffusion_models/level_3/version_01/",
+    4: "diffusion_models/level_4/version_01/",
+    5: "diffusion_models/level_5/version_01/",
+    6: "diffusion_models/level_6/version_01/",
+    7: "diffusion_models/level_7/version_01/",
 }
 
 
