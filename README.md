@@ -36,7 +36,9 @@ Our goal is to train a [conditional diffusion model](https://arxiv.org/abs/2111.
 ### Diffusion models
 
 Diffusion models presribe a forward process that gradually adds Gaussian noise to the data. This diffusion process transforms the data distribution $p_\text{data}(\sigma)$ of the conductivity $\sigma$ into a Gaussian distribution. The diffusion models is trained to reverse this process. Using the parameterization of [Ho et al.](https://arxiv.org/pdf/2006.11239.pdf), this amounts to training a denoiser $\epsilon_\theta(\sigma_t, t)$,
-$$ \min_\theta \mathbb{E}_{t \sim [1,T], \sigma_t, \epsilon_t}[ \| \epsilon_t - \epsilon_\theta(\sigma_t, t) \|^2], $$
+
+$$ \min_\theta E_{t \sim [1,T], \sigma_t, \epsilon_t}[ \| \epsilon_t - \epsilon_\theta(\sigma_t, t) \|^2], $$
+
 which estimates the noise $\epsilon_t$ of the noisy sample $x_t$ at time step $t$. As the forward diffusion process is a Gaussian, we can write the noisy sample $\sigma_t$ as 
 $$\sigma_t = \sqrt{\alpha_t} \sigma_0 + \sqrt{1 - \alpha_t} \epsilon_t, \quad \epsilon_t \sim \mathcal{N}(0,I)$$
 where $\sigma_0$ is a clean training image and $\alpha_t$ is a parameter from the forward diffusion process. By iteratively denoising a some $\sigma_T \sim \mathcal{N}(0,I)$, we can recover a sample from our data distribution $p_\text{data}(\sigma)$. This concept can be extended to conditional diffusion by introducing an additional input $c$ to the model, i.e. $\epsilon_\theta(\sigma_t,c, t)$.  
