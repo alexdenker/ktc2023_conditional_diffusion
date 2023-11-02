@@ -6,41 +6,8 @@ import torch.nn as nn
 
 from torch import Tensor
 
-from src.diffusion import SDE, VESDE, VPSDE, DDPM, _EPSILON_PRED_CLASSES, _SCORE_PRED_CLASSES
+from src.diffusion import SDE
 from src.third_party_models import OpenAiUNetModel
-
-def Euler_Maruyama_sde_predictor(
-    score: OpenAiUNetModel,
-    sde: SDE,
-    x: Tensor,
-    time_step: Tensor,
-    step_size: float,
-    cond_inp: Tensor
-    ) -> Tuple[Tensor, Tensor]:
-    '''
-    Implements the predictor step using Euler-Maruyama for VE/VP-SDE models
-    in  1. @article{song2020score,
-            title={Score-based generative modeling through stochastic differential equations},
-            author={Song, Yang and Sohl-Dickstein, Jascha and Kingma,
-                Diederik P and Kumar, Abhishek and Ermon, Stefano and Poole, Ben},
-            journal={arXiv preprint arXiv:2011.13456},
-            year={2020}
-        }, available at https://arxiv.org/abs/2011.13456.
-    '''
-    assert not any([isinstance(sde,classname) for classname in _EPSILON_PRED_CLASSES])
-
-    s = score(x, time_step)
-    
-
-    drift, diffusion = sde.sde(x, time_step)
-    _s = s
-
-    x_mean = x - (drift - diffusion[:, None, None, None].pow(2)*_s)*step_size
-    noise = torch.sqrt(diffusion[:, None, None, None].pow(2)*step_size)*torch.randn_like(x)
-
-    x = x_mean + noise # Algo.1  in 3. line 6
-
-    return x.detach(), x_mean.detach()
 
 def Ancestral_Sampling(
     score: OpenAiUNetModel, 
@@ -57,10 +24,7 @@ def Ancestral_Sampling(
         "Diffusion Posterior Sampling for General Noisy Inverse Problems" (2023) 
     Algortithm 1, however with a fixed standard deviation sigma_i
 
-    """
-
-    assert any([isinstance(sde,classname) for classname in _EPSILON_PRED_CLASSES])
-    
+    """    
     t = time_step[0]
     tminus1 = time_step[1]
 
@@ -80,7 +44,6 @@ def Ancestral_Sampling(
     return x.detach(), xhat0.detach()
 
 
-
 def ddim(
     sde: SDE,
     s: Tensor,
@@ -94,55 +57,26 @@ def ddim(
     t = time_step if not isinstance(time_step, Tuple) else time_step[0]
     tminus1 = time_step-step_size if not isinstance(time_step,Tuple) else time_step[1]
     std_t = sde.marginal_prob_std(t=t)[:, None, None, None]
-    if isinstance(sde, VESDE):
-        std_tminus1 = sde.marginal_prob_std(t=tminus1)[:, None, None, None]
-        tbeta = 1 - ( std_tminus1.pow(2) * std_t.pow(-2) ) if not use_simplified_eqn else torch.tensor(1.) 
-        noise_deterministic = - std_tminus1*std_t*torch.sqrt( 1 - tbeta.pow(2)*eta**2 ) * s
-        noise_stochastic = std_tminus1 * eta*tbeta*torch.randn_like(xhat)
-    elif any([isinstance(sde, classname) for classname in [VPSDE, DDPM]]):
-        mean_tminus1 = sde.marginal_prob_mean(t=tminus1)[:, None, None, None]
-        mean_t = sde.marginal_prob_mean(t=t)[:, None, None, None]
-        tbeta = ((1 - mean_tminus1.pow(2)) / ( 1 - mean_t.pow(2) ) ).pow(.5) * (1 - mean_t.pow(2) * mean_tminus1.pow(-2) ).pow(.5)
-        if any(tbeta.isnan()): tbeta = torch.zeros(*tbeta.shape, device=s.device)
-        xhat = xhat*mean_tminus1
-        eps_ = _eps_pred_from_s(s, std_t) if isinstance(sde, VPSDE) else s
-        noise_deterministic = torch.sqrt( 1 - mean_tminus1.pow(2) - tbeta.pow(2)*eta**2 )*eps_
-        noise_stochastic = eta*tbeta*torch.randn_like(xhat)
-    else:
-        raise NotImplementedError
-
+    
+    mean_tminus1 = sde.marginal_prob_mean(t=tminus1)[:, None, None, None]
+    mean_t = sde.marginal_prob_mean(t=t)[:, None, None, None]
+    tbeta = ((1 - mean_tminus1.pow(2)) / ( 1 - mean_t.pow(2) ) ).pow(.5) * (1 - mean_t.pow(2) * mean_tminus1.pow(-2) ).pow(.5)
+    if any(tbeta.isnan()): tbeta = torch.zeros(*tbeta.shape, device=s.device)
+    xhat = xhat*mean_tminus1
+    eps_ = s
+    noise_deterministic = torch.sqrt( 1 - mean_tminus1.pow(2) - tbeta.pow(2)*eta**2 )*eps_
+    noise_stochastic = eta*tbeta*torch.randn_like(xhat)
+    
     return xhat + noise_deterministic + noise_stochastic
 
 def apTweedy(s: Tensor, x: Tensor, sde: SDE, time_step:Tensor) -> Tensor:
 
     div = sde.marginal_prob_mean(time_step)[:, None, None, None].pow(-1)
     std_t = sde.marginal_prob_std(time_step)[:, None, None, None]
-    if any([isinstance(sde, classname) for classname in _SCORE_PRED_CLASSES]):
-        s = _eps_pred_from_s(s=s, std_t=std_t) # `s' here is `eps_.'
+
     update = x - s*std_t
 
     return update*div
-
-def chain_simple_init(
-    time_steps: Tensor,
-    sde: SDE,
-    filtbackproj: Tensor,
-    start_time_step: int,
-    im_shape: Tuple[int, int],
-    batch_size: int,
-    device: Any
-    ) -> Tensor:
-
-    t = torch.ones(batch_size, device=device) * time_steps[start_time_step]
-    std = sde.marginal_prob_std(t)[:, None, None, None]
-
-    return filtbackproj + torch.randn(batch_size, *im_shape, device=device) * std
-
-def _eps_pred_from_s(s, std_t):
-    # based on score-matching = - epsilon-mathcing / std_t
-    """s obtained with score-matching, converting to epsilon-prediction"""
-
-    return - std_t * s
 
 
 def _check_times(times, t_0, num_steps):
