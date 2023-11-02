@@ -34,6 +34,17 @@ level_to_hparams = {
     7: {'eta':0.8, 'num_samples': 15, 'num_steps': 100, 'use_ema':False},
 }
 
+level_to_model_path = { 
+    1: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01", #"diffusion_models/level_1/version_01/",
+    2: "",
+    3: "",
+    4: "",
+    5: "",
+    6: "",
+    7: ""
+}
+
+
 
 parser = argparse.ArgumentParser(description='reconstruction using conditional diffusion')
 parser.add_argument('input_folder')
@@ -59,11 +70,10 @@ def coordinator(args):
 
     sampling_params = level_to_hparams[level]
 
-
-    score.load_state_dict(torch.load(f"diffusion_models/level_{level}/version_01/model_training.pt"))
+    score.load_state_dict(torch.load(os.path.join(level_to_model_path[level],  "model_training.pt")))
     if sampling_params["use_ema"]:
         ema = ExponentialMovingAverage(score.parameters(), decay=0.999)
-        ema.load_state_dict(torch.load(f"diffusion_models/level_{level}/version_01/ema_model_training.pt"))
+        ema.load_state_dict(torch.load(os.path.join(level_to_model_path[level], "ema_model_training.pt")))
         ema.copy_to(score.parameters())
 
     score.to(device)
@@ -73,11 +83,8 @@ def coordinator(args):
         score=score,
         sde=sde,
         predictor=wrapper_ddim, 
-        corrector=None,
-        init_chain_fn=None,
         sample_kwargs={
             'num_steps': sampling_params["num_steps"], 
-            'start_time_step': 0,
             'batch_size': sampling_params["num_samples"],
             'im_shape': [1,256,256],
             'travel_length': 1, 
@@ -128,7 +135,7 @@ def coordinator(args):
         sigma_reco = np.stack([delta_sigma_0, delta_sigma_1, delta_sigma_2, delta_sigma_3, delta_sigma_4])
 
         reco = torch.from_numpy(sigma_reco).float().to(device).unsqueeze(0)
-        reco = torch.repeat_interleave(reco, repeats=num_samples, dim=0)
+        reco = torch.repeat_interleave(reco, repeats=sampling_params["num_samples"], dim=0)
         
         x_mean = sampler.sample(reco, logging=False)
 
@@ -143,7 +150,6 @@ def coordinator(args):
 
         savemat( os.path.join(output_path, str(objectno) + ".mat"),mdic)
         
-
     ### save reconstructions to args.output_folder 
     # as a .mat file containing a 256x256 pixel array with the name {file_idx}.mat 
     # the pixel array must be named "reconstruction" and is only allowed to have 0, 1 or 2 as values.
