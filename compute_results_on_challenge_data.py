@@ -137,7 +137,7 @@ def coordinator(args):
         x_round = torch.round(x_mean).cpu().numpy()[:,0,:,:]
         x_round[x_round > 2] = 2.
 
-        u, _ = mode(x_round, keepdims=False)
+        u = mode(x_round)[0][0,...]
 
         challenge_score = FastScoringFunction(x, u)
         mean_score += challenge_score

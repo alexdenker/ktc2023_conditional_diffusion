@@ -11,7 +11,6 @@ import torch
 
 from tqdm import tqdm
 from torch import Tensor
-from torch.utils.tensorboard import SummaryWriter
 
 from .utils import _schedule_jump
 from ..diffusion import SDE
@@ -38,9 +37,6 @@ class BaseSampler:
         logging: bool = True
         ) -> Tensor:
 
-        if logging:
-            writer = SummaryWriter(log_dir=os.path.join(logg_kwargs['log_dir'], str(logg_kwargs['sample_num'])))
-        
         num_steps = self.sample_kwargs['num_steps']
         __iter__ = None
 
@@ -56,16 +52,6 @@ class BaseSampler:
         step_size = time_steps[0] - time_steps[1]
         init_x = self.sde.prior_sampling([c.shape[0], *self.sample_kwargs['im_shape']]).to(self.device)
 
-        
-        if logging:
-            writer.add_image('init_x', torchvision.utils.make_grid(init_x, 
-                normalize=True, scale_each=True), global_step=0)
-            if logg_kwargs['ground_truth'] is not None: writer.add_image(
-                'ground_truth', torchvision.utils.make_grid(logg_kwargs['ground_truth'].squeeze(), 
-                    normalize=True, scale_each=True), global_step=0)
-            writer.add_image('cond_inp', torchvision.utils.make_grid(c.squeeze(), 
-                    normalize=True, scale_each=True), global_step=0)
-        
         x = init_x
         i = 0
         pbar = tqdm(__iter__)
@@ -88,17 +74,5 @@ class BaseSampler:
                 **self.sample_kwargs['predictor']
                 )
 
-            if logging:
-                if i % logg_kwargs['num_img_in_log'] == 0:
-                    writer.add_image('reco', torchvision.utils.make_grid(x_mean.squeeze(), normalize=True, scale_each=True), i)
-                
-                
-                pbar.set_postfix({'step': step})
             i += 1
-
-        if logging:
-            writer.add_image(
-                'final_reco', torchvision.utils.make_grid(x_mean.squeeze(),
-                normalize=True, scale_each=True), global_step=0)
-
         return x_mean 
