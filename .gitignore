@@ -8,6 +8,8 @@ postprocessing_model/
 # C extensions
 *.so
 
+test/
+
 # Distribution / packaging
 bin/
 build/
