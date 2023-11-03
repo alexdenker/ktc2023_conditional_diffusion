@@ -117,11 +117,12 @@ $$~$$   | $$~$$
 
 $$~$$   | $$~$$  
 :--------------------:|:------------------:
-![alt text](examples/level_7/img_1.png "Level 7") | ![alt text](examples/level_7/img_2.png "Level 7")
-![alt text](examples/level_7/img_3.png "Level 7") | ![alt text](examples/level_7/img_4.png "Level 7")
+![Level 7](examples/level_7/img_1.png) | ![Level 7](examples/level_7/img_2.png)
+![Level 7](examples/level_7/img_3.png) | ![Level 7](examples/level_7/img_4.png)
 
+## Test
 
-
+![level3](examples/level_3/img_3.png)
 
 ## Evaluation
 
