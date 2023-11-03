@@ -78,57 +78,83 @@ We create synthetic conductivity images to train the conditional diffusion model
   <img src="examples/level_1/img_2.png" width="49%" />
 </p>
 
-
-$$~$$                                   | $$~$$  
-:-----------------------------------------:|:------------------------------------:
-![results](examples/level_1/img_1.png) | ![results](examples/level_1/img_2.png)
-![results](examples/level_1/img_3.png) | ![results](examples/level_1/img_4.png)
+<p float="left">
+  <img src="examples/level_1/img_3.png" width="49%" />
+  <img src="examples/level_1/img_4.png" width="49%" />
+</p>
 
 ### Level 2
 
-$$~$$                                   | $$~$$  
-:-----------------------------------------:|:------------------------------------:
-![results](examples/level_2/img_1.png) | ![results](examples/level_2/img_2.png)
-![results](examples/level_2/img_3.png) | ![results](examples/level_2/img_4.png)
+<p float="left">
+  <img src="examples/level_2/img_1.png" width="49%" />
+  <img src="examples/level_2/img_2.png" width="49%" />
+</p>
+
+<p float="left">
+  <img src="examples/level_2/img_3.png" width="49%" />
+  <img src="examples/level_2/img_4.png" width="49%" />
+</p>
+
 
 ### Level 3
 
-$$~$$                                   | $$~$$  
-:-----------------------------------------:|:------------------------------------:
-![results](examples/level_3/img_1.png) | ![results](examples/level_3/img_2.png)
-![results](examples/level_3/img_3.png) | ![results](examples/level_3/img_4.png)
+<p float="left">
+  <img src="examples/level_3/img_1.png" width="49%" />
+  <img src="examples/level_3/img_2.png" width="49%" />
+</p>
+
+<p float="left">
+  <img src="examples/level_3/img_3.png" width="49%" />
+  <img src="examples/level_3/img_4.png" width="49%" />
+</p>
 
 ### Level 4
 
-$$~$$                                   | $$~$$  
-:-----------------------------------------:|:------------------------------------:
-![results](examples/level_4/img_1.png) | ![results](examples/level_4/img_2.png)
-![results](examples/level_4/img_3.png) | ![results](examples/level_4/img_4.png)
+<p float="left">
+  <img src="examples/level_4/img_1.png" width="49%" />
+  <img src="examples/level_4/img_2.png" width="49%" />
+</p>
+
+<p float="left">
+  <img src="examples/level_4/img_3.png" width="49%" />
+  <img src="examples/level_4/img_4.png" width="49%" />
+</p>
 
 ### Level 5
 
-$$~$$                                   | $$~$$  
-:-----------------------------------------:|:------------------------------------:
-![results](examples/level_5/img_1.png) | ![results](examples/level_5/img_2.png)
-![results](examples/level_5/img_3.png) | ![results](examples/level_5/img_4.png)
+<p float="left">
+  <img src="examples/level_5/img_1.png" width="49%" />
+  <img src="examples/level_5/img_2.png" width="49%" />
+</p>
+
+<p float="left">
+  <img src="examples/level_5/img_3.png" width="49%" />
+  <img src="examples/level_5/img_4.png" width="49%" />
+</p>
 
 ### Level 6
 
-$$~$$                                   | $$~$$  
-:-----------------------------------------:|:------------------------------------:
-![results](examples/level_6/img_1.png) | ![results](examples/level_6/img_2.png)
-![results](examples/level_6/img_3.png) | ![results](examples/level_6/img_4.png)
+<p float="left">
+  <img src="examples/level_6/img_1.png" width="49%" />
+  <img src="examples/level_6/img_2.png" width="49%" />
+</p>
+
+<p float="left">
+  <img src="examples/level_6/img_3.png" width="49%" />
+  <img src="examples/level_6/img_4.png" width="49%" />
+</p>
 
 ### Level 7
 
-$$~$$                                   | $$~$$  
-:-----------------------------------------:|:------------------------------------:
-![Level 7](examples/level_7/img_1.png) | ![Level 7](examples/level_7/img_2.png)
-![Level 7](examples/level_7/img_3.png) | ![Level 7](examples/level_7/img_4.png)
+<p float="left">
+  <img src="examples/level_7/img_1.png" width="49%" />
+  <img src="examples/level_7/img_2.png" width="49%" />
+</p>
 
-## Test
-
-![level3](examples/level_3/img_3.png)
+<p float="left">
+  <img src="examples/level_7/img_3.png" width="49%" />
+  <img src="examples/level_7/img_4.png" width="49%" />
+</p>
 
 ## Evaluation
 
