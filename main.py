@@ -35,7 +35,7 @@ level_to_hparams = {
 }
 
 level_to_model_path = { 
-    1: "diffusion_models/level_1/version_01/",   # /localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01"
+    1: "diffusion_models/level_1/version_01/",  
     2: "diffusion_models/level_2/version_01/",
     3: "diffusion_models/level_3/version_01/",
     4: "diffusion_models/level_4/version_01/",
@@ -54,6 +54,9 @@ parser.add_argument('level')
 def coordinator(args):
     level = int(args.level)
     device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    torch.manual_seed(42)
+
 
     print("Input folder: ", args.input_folder)
     print("Output folder: ", args.output_folder)

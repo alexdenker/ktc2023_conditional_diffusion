@@ -35,9 +35,8 @@ level_to_hparams = {
     7: {'eta':0.8, 'num_samples': 15, 'num_steps': 100, 'use_ema':False},
 }
 
-"""
 level_to_model_path = { 
-    1: "diffusion_models/level_1/version_01/",   # /localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01
+    1: "diffusion_models/level_1/version_01/",  
     2: "diffusion_models/level_2/version_01/",
     3: "diffusion_models/level_3/version_01/",
     4: "diffusion_models/level_4/version_01/",
@@ -45,17 +44,7 @@ level_to_model_path = {
     6: "diffusion_models/level_6/version_01/",
     7: "diffusion_models/level_7/version_01/",
 }
-"""
 
-level_to_model_path = { 
-    1: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01",   
-    2: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_2/version_01",   
-    3: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_3/version_01",   
-    4: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_4/version_01",   
-    5: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_5/version_01",   
-    6: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_6/version_01",   
-    7: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_7/version_01",   
-}
 
 
 parser = argparse.ArgumentParser(description='reconstruction using conditional diffusion')
@@ -126,8 +115,7 @@ def coordinator(args):
                 vincl_level[:,ii] = 0
             vincl_level[jj,:] = 0
 
-    reconstructor = LinearisedRecoFenics(Uelref, B, vincl_level, mesh_name=mesh_name,
-                                        base_path="/home/adenker/projects/ktc2023/dl_for_ktc2023/data")
+    reconstructor = LinearisedRecoFenics(Uelref, B, vincl_level, mesh_name=mesh_name)
 
     alphas = level_to_alphas[level]
 
@@ -170,11 +158,6 @@ def coordinator(args):
 
         plt.savefig(os.path.join(save_path, f"img_{i}.png"))
         plt.close()
-        
-    ### save reconstructions to args.output_folder 
-    # as a .mat file containing a 256x256 pixel array with the name {file_idx}.mat 
-    # the pixel array must be named "reconstruction" and is only allowed to have 0, 1 or 2 as values.
-
 
 if __name__ == '__main__':
     args = parser.parse_args()
