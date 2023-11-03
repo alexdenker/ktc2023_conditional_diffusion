@@ -11,7 +11,7 @@ For this submission, we developed a **conditional diffusion model** for EIT segm
 
 ## Usage
 
-We provide the `enviroment.yml` file to restore the conda enviroment used for the submission. You can create the environment using the following command:
+We provide the `environment.yml` file to restore the conda environment used for the submission. You can create the environment using the following command:
 
 ```
 conda env create -f environment.yml
@@ -31,11 +31,11 @@ python main.py /path_to_input_folder /path_to_ouput_folder difficulty_level
 
 ## Method
 
-Our goal is to train a [conditional diffusion model](https://arxiv.org/abs/2111.13606), to sample from the conditional distribution $p(\sigma|c)$. Here, $\sigma$ denotes the conductivity map (interpolated to the $256 \times 256$ pixel grid) $c$ the some conditional input. Note, that we do not use the raw measurements $U$ directly as the conditional input. Instead, we use an initial reconstruction method $\mathcal{R}$ and make use of the initial reconstruction $\mathcal{R}(U)$. Further, this initial reconstruction is interpolated to the $256 \times 256$ pixel grid. This has the practical advantage that we can implement the diffusion model as a convolutional neural network and are independent of the underlying mesh. 
+Our goal is to train a [conditional diffusion model](https://arxiv.org/abs/2111.13606), to sample from the conditional distribution $p(\sigma|c)$. Here, $\sigma$ denotes the conductivity map (interpolated to the $256 \times 256$ pixel grid) and $c$ some conditional input. Note, that we do not use the raw measurements $U$ directly as the conditional input. Instead, we use an initial reconstruction method $\mathcal{R}$ and make use of the initial reconstruction $\mathcal{R}(U)$. Further, this initial reconstruction is interpolated to the $256 \times 256$ pixel grid. This has the practical advantage that we can implement the diffusion model as a convolutional neural network and are independent of the underlying mesh. 
 
 ### Diffusion models
 
-Diffusion models presribe a forward process that gradually adds Gaussian noise to the data. This diffusion process transforms the data distribution $p_\text{data}(\sigma)$ of the conductivity $\sigma$ into a Gaussian distribution. The diffusion models is trained to reverse this process. Using the parameterization of [Ho et al.](https://arxiv.org/pdf/2006.11239.pdf), this amounts to training a denoiser $\epsilon_\theta(\sigma_t, t)$,
+Diffusion models prescribe a forward process that gradually adds Gaussian noise to the data. This diffusion process transforms the data distribution $p_\text{data}(\sigma)$ of the conductivity $\sigma$ into a Gaussian distribution. The diffusion model is trained to reverse this process. Using the parameterization of [Ho et al.](https://arxiv.org/pdf/2006.11239.pdf), this amounts to training a denoiser $\epsilon_\theta(\sigma_t, t)$,
 
 $$ \min_\theta E_{t \sim [1,T], \sigma_t, \epsilon_t}[ \| \epsilon_t - \epsilon_\theta(\sigma_t, t) \|^2], $$
 
@@ -43,11 +43,11 @@ which estimates the noise $\epsilon_t$ of the noisy sample $x_t$ at time step $t
 $$\sigma_t = \sqrt{\alpha_t} \sigma_0 + \sqrt{1 - \alpha_t} \epsilon_t, \quad \epsilon_t \sim \mathcal{N}(0,I)$$
 where $\sigma_0$ is a clean training image and $\alpha_t$ is a parameter from the forward diffusion process. By iteratively denoising a some $\sigma_T \sim \mathcal{N}(0,I)$, we can recover a sample from our data distribution $p_\text{data}(\sigma)$. This concept can be extended to conditional diffusion by introducing an additional input $c$ to the model, i.e. $\epsilon_\theta(\sigma_t,c, t)$.  
 
-In our work, we implement $\epsilon_\theta$ as a time conditional diffusion model using the [guided diffusion](https://github.com/openai/guided-diffusion/tree/main) implementation. For sampling, we make use of the [DDIM](https://arxiv.org/pdf/2010.02502.pdf) framework. We directly train the network to recover the segmentation of the conductivity map, i.e. $\sigma$ is directly given as a $256 \times 256$ segmentation mask. This means, that we are learning the conditional distribution of semgentation masks, given an initial reconstruction. 
+In our work, we implement $\epsilon_\theta$ as a time conditional diffusion model using the [guided diffusion](https://github.com/openai/guided-diffusion/tree/main) implementation. For sampling, we make use of the [DDIM](https://arxiv.org/pdf/2010.02502.pdf) framework. We directly train the network to recover the segmentation of the conductivity map, i.e. $\sigma$ is directly given as a $256 \times 256$ segmentation mask. This means, that we are learning the conditional distribution of segmentation masks, given an initial reconstruction. 
 
 The initial segmentation depends on the number of available measurements. We train an individual conditional diffusion models (using the same training setup and architecture) for each level of the challenge. 
 
-For our final prediction of the segmentation mask, we take $N$ independent random samples from the conditional diffusion model and take the most frequent class per pixel. In principle, this method would be able to give us an uncertainty map for the semgentation mask. 
+For our final prediction of the segmentation mask, we take $N$ independent random samples from the conditional diffusion model and take the most frequent class per pixel. In principle, this method would be able to give us an uncertainty map for the segmentation mask. 
 
 
 ### Initial Reconstructions
@@ -68,7 +68,7 @@ For simulation, we used the forward operator provided by the organisers with the
 
 ### Synthetic Training Data
 
-We create synthetic conductivity images to train the conditional diffusion model. For this, we simulate a random number (1 to 4) of objects inside the water tank. Here, we are using circles, random polygones and handdrawn objects. We make sure that these objects dont overlap. Each object is then randomly assigned to be either conductive or resistive. Using this method, we create ~15.000 images per challenge level.
+We create synthetic conductivity images to train the conditional diffusion model. For this, we simulate a random number (1 to 4) of objects inside the water tank. Here, we are using circles, random polygons and hand-drawn objects. We make sure that these objects do not overlap. Each object is then randomly assigned to be either conductive or resistive. Using this method, we create ~15.000 images per challenge level.
 
 ## Examples
 
