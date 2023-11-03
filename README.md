@@ -73,50 +73,50 @@ We create synthetic conductivity images to train the conditional diffusion model
 ## Examples
 ### Level 1
 
-$$~$$   | $$~$$  
-:--------------------:|:------------------:
-![alt text](examples/level_1/img_1.png "Level 1") | ![alt text](examples/level_1/img_2.png "Level 1")
-![alt text](examples/level_1/img_3.png "Level 1") | ![alt text](examples/level_1/img_4.png "Level 1")
+$$~$$                                   | $$~$$  
+:-----------------------------------------:|:------------------------------------:
+![results](examples/level_1/img_1.png) | ![results](examples/level_1/img_2.png)
+![results](examples/level_1/img_3.png) | ![results](examples/level_1/img_4.png)
 
 ### Level 2
 
-$$~$$   | $$~$$  
-:--------------------:|:------------------:
-![alt text](examples/level_2/img_1.png "Level 2") | ![alt text](examples/level_2/img_2.png "Level 2")
-![alt text](examples/level_2/img_3.png "Level 2") | ![alt text](examples/level_2/img_4.png "Level 2")
+$$~$$                                   | $$~$$  
+:-----------------------------------------:|:------------------------------------:
+![results](examples/level_2/img_1.png) | ![results](examples/level_2/img_2.png)
+![results](examples/level_2/img_3.png) | ![results](examples/level_2/img_4.png)
 
 ### Level 3
 
-$$~$$   | $$~$$  
-:--------------------:|:------------------:
-![alt text](examples/level_3/img_1.png "Level 3") | ![alt text](examples/level_3/img_2.png "Level 3")
-![alt text](examples/level_3/img_3.png "Level 3") | ![alt text](examples/level_3/img_4.png "Level 3")
+$$~$$                                   | $$~$$  
+:-----------------------------------------:|:------------------------------------:
+![results](examples/level_3/img_1.png) | ![results](examples/level_3/img_2.png)
+![results](examples/level_3/img_3.png) | ![results](examples/level_3/img_4.png)
 
 ### Level 4
 
-$$~$$   | $$~$$  
-:--------------------:|:------------------:
-![alt text](examples/level_4/img_1.png "Level 4") | ![alt text](examples/level_4/img_2.png "Level 4")
-![alt text](examples/level_4/img_3.png "Level 4") | ![alt text](examples/level_4/img_4.png "Level 4")
+$$~$$                                   | $$~$$  
+:-----------------------------------------:|:------------------------------------:
+![results](examples/level_4/img_1.png) | ![results](examples/level_4/img_2.png)
+![results](examples/level_4/img_3.png) | ![results](examples/level_4/img_4.png)
 
 ### Level 5
 
-$$~$$   | $$~$$  
-:--------------------:|:------------------:
-![alt text](examples/level_5/img_1.png "Level 5") | ![alt text](examples/level_5/img_2.png "Level 5")
-![alt text](examples/level_5/img_3.png "Level 5") | ![alt text](examples/level_5/img_4.png "Level 5")
+$$~$$                                   | $$~$$  
+:-----------------------------------------:|:------------------------------------:
+![results](examples/level_5/img_1.png) | ![results](examples/level_5/img_2.png)
+![results](examples/level_5/img_3.png) | ![results](examples/level_5/img_4.png)
 
 ### Level 6
 
-$$~$$   | $$~$$  
-:--------------------:|:------------------:
-![alt text](examples/level_6/img_1.png "Level 6") | ![alt text](examples/level_6/img_2.png "Level 6")
-![alt text](examples/level_6/img_3.png "Level 6") | ![alt text](examples/level_6/img_4.png "Level 6")
+$$~$$                                   | $$~$$  
+:-----------------------------------------:|:------------------------------------:
+![results](examples/level_6/img_1.png) | ![results](examples/level_6/img_2.png)
+![results](examples/level_6/img_3.png) | ![results](examples/level_6/img_4.png)
 
 ### Level 7
 
-$$~$$   | $$~$$  
-:--------------------:|:------------------:
+$$~$$                                   | $$~$$  
+:-----------------------------------------:|:------------------------------------:
 ![Level 7](examples/level_7/img_1.png) | ![Level 7](examples/level_7/img_2.png)
 ![Level 7](examples/level_7/img_3.png) | ![Level 7](examples/level_7/img_4.png)
 
