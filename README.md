@@ -73,6 +73,12 @@ We create synthetic conductivity images to train the conditional diffusion model
 ## Examples
 ### Level 1
 
+<p float="left">
+  <img src="examples/level_1/img_1.png" width="49%" />
+  <img src="examples/level_1/img_2.png" width="49%" />
+</p>
+
+
 $$~$$                                   | $$~$$  
 :-----------------------------------------:|:------------------------------------:
 ![results](examples/level_1/img_1.png) | ![results](examples/level_1/img_2.png)
