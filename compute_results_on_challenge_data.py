@@ -6,6 +6,7 @@ import argparse
 import numpy as np 
 from scipy.stats import mode
 from pathlib import Path 
+import matplotlib.pyplot as plt 
 
 from configs.default_config import get_default_configs
 from src import get_standard_score, get_standard_sde, wrapper_ddim, BaseSampler, LinearisedRecoFenics
@@ -34,6 +35,7 @@ level_to_hparams = {
     7: {'eta':0.8, 'num_samples': 15, 'num_steps': 100, 'use_ema':False},
 }
 
+"""
 level_to_model_path = { 
     1: "diffusion_models/level_1/version_01/",   # /localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01
     2: "diffusion_models/level_2/version_01/",
@@ -43,17 +45,33 @@ level_to_model_path = {
     6: "diffusion_models/level_6/version_01/",
     7: "diffusion_models/level_7/version_01/",
 }
+"""
 
+level_to_model_path = { 
+    1: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_1/version_01",   
+    2: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_2/version_01",   
+    3: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_3/version_01",   
+    4: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_4/version_01",   
+    5: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_5/version_01",   
+    6: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_6/version_01",   
+    7: "/localdata/AlexanderDenker/KTC2023/diffusion_models/level_7/version_01",   
+}
 
 
 parser = argparse.ArgumentParser(description='reconstruction using conditional diffusion')
 parser.add_argument('level')
 
 def coordinator(args):
+
+    torch.manual_seed(42)
+
     level = int(args.level)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print("Level: ", args.level)
 
+    save_path = f"examples/level_{level}/"
+    save_path = Path(save_path)
+    save_path.mkdir(parents=True, exist_ok=True)
 
     ### load conditional diffusion model 
     config = get_default_configs()
@@ -108,7 +126,8 @@ def coordinator(args):
                 vincl_level[:,ii] = 0
             vincl_level[jj,:] = 0
 
-    reconstructor = LinearisedRecoFenics(Uelref, B, vincl_level, mesh_name=mesh_name)
+    reconstructor = LinearisedRecoFenics(Uelref, B, vincl_level, mesh_name=mesh_name,
+                                        base_path="/home/adenker/projects/ktc2023/dl_for_ktc2023/data")
 
     alphas = level_to_alphas[level]
 
@@ -139,12 +158,18 @@ def coordinator(args):
 
         u = mode(x_round)[0][0,...]
 
-        challenge_score = FastScoringFunction(x, u)
-        mean_score += challenge_score
-        print(f"Score on data {i} is: {challenge_score}")
+        fig, (ax1, ax2) = plt.subplots(1,2)
 
-    print(f"Mean score at level {level} is: {mean_score/4.}")
+        ax1.imshow(x)
+        ax1.set_title("Ground truth")
+        ax1.axis("off")
 
+        ax2.imshow(u)
+        ax2.set_title("Prediction")
+        ax2.axis("off")
+
+        plt.savefig(os.path.join(save_path, f"img_{i}.png"))
+        plt.close()
         
     ### save reconstructions to args.output_folder 
     # as a .mat file containing a 256x256 pixel array with the name {file_idx}.mat 

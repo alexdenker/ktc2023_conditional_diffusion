@@ -71,9 +71,59 @@ For simulation, we used the forward operator provided by the organisers with the
 We create synthetic conductivity images to train the conditional diffusion model. For this, we simulate a random number (1 to 4) of objects inside the water tank. Here, we are using circles, random polygons and hand-drawn objects. We make sure that these objects do not overlap. Each object is then randomly assigned to be either conductive or resistive. Using this method, we create ~15.000 images per challenge level.
 
 ## Examples
+### Level 1
+
+$$~$$   | $$~$$  
+:--------------------:|:------------------:
+![alt text](examples/level_1/img_1.png "Level 1") | ![alt text](examples/level_1/img_2.png "Level 1")
+![alt text](examples/level_1/img_3.png "Level 1") | ![alt text](examples/level_1/img_4.png "Level 1")
+
+### Level 2
+
+$$~$$   | $$~$$  
+:--------------------:|:------------------:
+![alt text](examples/level_2/img_1.png "Level 2") | ![alt text](examples/level_2/img_2.png "Level 2")
+![alt text](examples/level_2/img_3.png "Level 2") | ![alt text](examples/level_2/img_4.png "Level 2")
+
+### Level 3
+
+$$~$$   | $$~$$  
+:--------------------:|:------------------:
+![alt text](examples/level_3/img_1.png "Level 3") | ![alt text](examples/level_3/img_2.png "Level 3")
+![alt text](examples/level_3/img_3.png "Level 3") | ![alt text](examples/level_3/img_4.png "Level 3")
+
+### Level 4
+
+$$~$$   | $$~$$  
+:--------------------:|:------------------:
+![alt text](examples/level_4/img_1.png "Level 4") | ![alt text](examples/level_4/img_2.png "Level 4")
+![alt text](examples/level_4/img_3.png "Level 4") | ![alt text](examples/level_4/img_4.png "Level 4")
+
+### Level 5
+
+$$~$$   | $$~$$  
+:--------------------:|:------------------:
+![alt text](examples/level_5/img_1.png "Level 5") | ![alt text](examples/level_5/img_2.png "Level 5")
+![alt text](examples/level_5/img_3.png "Level 5") | ![alt text](examples/level_5/img_4.png "Level 5")
+
+### Level 6
+
+$$~$$   | $$~$$  
+:--------------------:|:------------------:
+![alt text](examples/level_6/img_1.png "Level 6") | ![alt text](examples/level_6/img_2.png "Level 6")
+![alt text](examples/level_6/img_3.png "Level 6") | ![alt text](examples/level_6/img_4.png "Level 6")
+
+### Level 7
+
+$$~$$   | $$~$$  
+:--------------------:|:------------------:
+![alt text](examples/level_7/img_1.png "Level 7") | ![alt text](examples/level_7/img_2.png "Level 7")
+![alt text](examples/level_7/img_3.png "Level 7") | ![alt text](examples/level_7/img_4.png "Level 7")
+
+
+
 
 ## Evaluation
-
 
 We evaluate the conditional diffusion model w.r.t. the [score function](https://www.fips.fi/KTC2023_Instructions_v3_Oct12.pdf) used in the challenge. In the following we present the mean score over the four challenge phantoms:
 
@@ -93,6 +143,6 @@ We evaluate the conditional diffusion model w.r.t. the [score function](https://
 
 - Alexander Denker<sup>1</sup>, Tom Freudenberg<sup>1</sup>, Željko Kereta<sup>2</sup>, Imraj RD Singh<sup>2</sup>, Tobias Kluth<sup>1</sup>, Simon Arridge <sup>2</sup>
 
-<sup>1</sup>Center of Industrial Mathematics (ZeTeM), University of Bremen
+<sup>1</sup>Center of Industrial Mathematics (ZeTeM), University of Bremen, Bibliothekstr. 5, 28359 Bremen, Germany.
 
-<sup>2</sup>Department of Computer Science, University College London
+<sup>2</sup>Department of Computer Science, University College London, 66-72 Gower St, WC1E 6EA, London, United Kingdom.
