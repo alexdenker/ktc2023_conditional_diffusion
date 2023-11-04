@@ -11,7 +11,7 @@ from configs.default_config import get_default_configs
 from src import get_standard_score, get_standard_sde, wrapper_ddim, BaseSampler, LinearisedRecoFenics
 from src import ExponentialMovingAverage
 
-BATCH_MODE = False
+BATCH_MODE = True
 # If BATCH_MODE = True, all samples will be drawn in parallel, this only works if the GPU is large enough (works with 24GB VRAM).
 # If BATCH_MODE = False, all samples will be drawn in sequence, this also works on small(er) GPUs.
 
