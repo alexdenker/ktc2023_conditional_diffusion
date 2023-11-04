@@ -17,7 +17,7 @@ We provide the `environment.yml` file to restore the conda environment used for 
 conda env create -f environment.yml
 ```
 
-The network weights are stored [here](https://seafile.zfn.uni-bremen.de/d/59c291e4bf7d4064a1be/). They have to be loaded into *diffusion_models/level_{level}/model.pt*.
+The network weights are stored [here](https://seafile.zfn.uni-bremen.de/d/59c291e4bf7d4064a1be/) and have to be stored in *diffusion_models*. They have to be loaded into *diffusion_models/level_{level}/model.pt*.
  We precomputed the Jacobian for an empty water tank, as well as some other matrices (smoothness regulariser, node coordinates). This eliminates the need to install FEniCS in the environment. All of these matrices are available [here](https://seafile.zfn.uni-bremen.de/d/9108bc95b2e84cd285f8/) and have to be stored in *data/*.
 
 

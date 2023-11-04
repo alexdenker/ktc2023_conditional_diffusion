@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *.pyc
-diffusion_models/
 data/
 postprocessing_model/
 # C extensions
