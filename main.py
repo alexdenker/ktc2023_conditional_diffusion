@@ -11,11 +11,9 @@ from configs.default_config import get_default_configs
 from src import get_standard_score, get_standard_sde, wrapper_ddim, BaseSampler, LinearisedRecoFenics
 from src import ExponentialMovingAverage
 
-BATCH_MODE = False 
-# If BATCH_MODE = True, all samples will be drawn in parallel, this only works if the GPU is large enough. 
-# If BATCH_MODE = False, all samples will be drawn in sequence, this also works on small GPUs.
-
-
+BATCH_MODE = False
+# If BATCH_MODE = True, all samples will be drawn in parallel, this only works if the GPU is large enough (works with 24GB VRAM).
+# If BATCH_MODE = False, all samples will be drawn in sequence, this also works on small(er) GPUs.
 
 # regularisation parameters for initial reconstruction 
 level_to_alphas = {
@@ -50,8 +48,6 @@ level_to_model_path = {
     7: "diffusion_models/level_7/version_01/",
 }
 
-
-
 parser = argparse.ArgumentParser(description='reconstruction using conditional diffusion')
 parser.add_argument('input_folder')
 parser.add_argument('output_folder')
@@ -62,7 +58,6 @@ def coordinator(args):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     torch.manual_seed(42 + level)
-
 
     print("Input folder: ", args.input_folder)
     print("Output folder: ", args.output_folder)
@@ -129,9 +124,10 @@ def coordinator(args):
 
     alphas = level_to_alphas[level]
     for f in f_list: 
-
+        print("Processing file: ", f)
         y = np.array(loadmat(os.path.join(args.input_folder, f))["Uel"])
 
+        print("Getting initial reconstructions...")
         ## get initial reconstruction 
         delta_sigma_list = reconstructor.reconstruct_list(y, alphas)
 
@@ -145,12 +141,14 @@ def coordinator(args):
 
         reco = torch.from_numpy(sigma_reco).float().to(device).unsqueeze(0)
 
+        print("Sampling conditional score model...")
         if BATCH_MODE:
             reco = torch.repeat_interleave(reco, repeats=sampling_params["num_samples"], dim=0)
             x_mean = sampler.sample(reco, logging=False)
         else:
             x_mean = [] 
-            for b in range(BATCH_MODE):
+
+            for b in range(sampling_params["num_samples"]):
                 x_ = sampler.sample(reco, logging=False)
                 x_mean.append(x_)
 
@@ -159,13 +157,14 @@ def coordinator(args):
         x_round = torch.round(x_mean).cpu().numpy()[:,0,:,:]
         x_round[x_round > 2] = 2.
 
-        u, _ = mode(x_round, keepdims=False)
+        u = mode(x_round)[0][0]
 
         mdic = {"reconstruction": u.astype(int)}
 
         objectno = f.split(".")[0][-1]
 
         savemat( os.path.join(output_path, str(objectno) + ".mat"),mdic)
+        print("Finished rocessing file: ", f)
         
     ### save reconstructions to args.output_folder 
     # as a .mat file containing a 256x256 pixel array with the name {file_idx}.mat 
