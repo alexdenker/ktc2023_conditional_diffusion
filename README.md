@@ -27,6 +27,10 @@ The script `main.py` can be used to reconstruct phantoms:
 python main.py /path_to_input_folder /path_to_ouput_folder difficulty_level
 ```
 
+We take $N$ random draws of the diffusion model to get our final reconstruction. This $N$ samples can be drawn in parallel. However, this requires a large GPU if $N$ is large. We included a variable **BATCH_MODE** in line 14. If **BATCH_MODE = True**, the model will try to draw the $N$ samples in parallel. If **BATCH_MODE = False**, all samples will be drawn in sequence. This option only refers to the reconstruction speed and the final prediction will be the same. Default **BATCH_MODE = False**. 
+
+For reproducibility, we use a fixed seed for sampling.
+
 ### Enviroment
 
 ## Method

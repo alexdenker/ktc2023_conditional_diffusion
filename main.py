@@ -11,6 +11,12 @@ from configs.default_config import get_default_configs
 from src import get_standard_score, get_standard_sde, wrapper_ddim, BaseSampler, LinearisedRecoFenics
 from src import ExponentialMovingAverage
 
+BATCH_MODE = False 
+# If BATCH_MODE = True, all samples will be drawn in parallel, this only works if the GPU is large enough. 
+# If BATCH_MODE = False, all samples will be drawn in sequence, this also works on small GPUs.
+
+
+
 # regularisation parameters for initial reconstruction 
 level_to_alphas = {
     1 : [[1956315.789, 0.,0.],[0., 656.842 , 0.],[0.,0.1,6.105],[1956315.789/3., 656.842/3,6.105/3.], [1e4, 0.1,5.]], 
@@ -55,7 +61,7 @@ def coordinator(args):
     level = int(args.level)
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    torch.manual_seed(42)
+    torch.manual_seed(42 + level)
 
 
     print("Input folder: ", args.input_folder)
@@ -88,7 +94,7 @@ def coordinator(args):
         predictor=wrapper_ddim, 
         sample_kwargs={
             'num_steps': sampling_params["num_steps"], 
-            'batch_size': sampling_params["num_samples"],
+            'batch_size': sampling_params["num_samples"] if BATCH_MODE else 1,
             'im_shape': [1,256,256],
             'travel_length': 1, 
             'travel_repeat': 1, 
@@ -138,9 +144,17 @@ def coordinator(args):
         sigma_reco = np.stack([delta_sigma_0, delta_sigma_1, delta_sigma_2, delta_sigma_3, delta_sigma_4])
 
         reco = torch.from_numpy(sigma_reco).float().to(device).unsqueeze(0)
-        reco = torch.repeat_interleave(reco, repeats=sampling_params["num_samples"], dim=0)
-        
-        x_mean = sampler.sample(reco, logging=False)
+
+        if BATCH_MODE:
+            reco = torch.repeat_interleave(reco, repeats=sampling_params["num_samples"], dim=0)
+            x_mean = sampler.sample(reco, logging=False)
+        else:
+            x_mean = [] 
+            for b in range(BATCH_MODE):
+                x_ = sampler.sample(reco, logging=False)
+                x_mean.append(x_)
+
+            x_mean = torch.concat(x_mean)
 
         x_round = torch.round(x_mean).cpu().numpy()[:,0,:,:]
         x_round[x_round > 2] = 2.
