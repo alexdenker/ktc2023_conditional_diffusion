@@ -27,7 +27,7 @@ The script `main.py` can be used to reconstruct phantoms:
 python main.py /path_to_input_folder /path_to_ouput_folder difficulty_level
 ```
 
-We take $N$ random draws of the diffusion model to get our final reconstruction. This $N$ samples can be drawn in parallel. However, this requires a large GPU if $N$ is large. We included a variable **BATCH_MODE** in line 14. If **BATCH_MODE = True**, the model will try to draw the $N$ samples in parallel. If **BATCH_MODE = False**, all samples will be drawn in sequence. This option only refers to the reconstruction speed and the final prediction will be the same. Default **BATCH_MODE = False**. 
+We take $N$ random draws of the diffusion model to get our final reconstruction. These $N$ samples are drawn in parallel, which require are suitable sized GPU. We included a variable **BATCH_MODE** in line 14. If **BATCH_MODE = True**, the model will try to draw the $N$ samples in parallel. If **BATCH_MODE = False**, all samples will be drawn in sequence. This option slightly changes the final prediction (as the random numbers are drawn in a different order) and is slower. Default **BATCH_MODE = True**. 
 
 For reproducibility, we use a fixed seed for sampling.
 
@@ -36,6 +36,8 @@ For reproducibility, we use a fixed seed for sampling.
 ## Method
 
 Our goal is to train a [conditional diffusion model](https://arxiv.org/abs/2111.13606), to sample from the conditional distribution $p(\sigma|c)$. Here, $\sigma$ denotes the conductivity map (interpolated to the $256 \times 256$ pixel grid) and $c$ some conditional input. Note that we do not use the raw measurements $U$ directly as the conditional input. Instead, we use an initial reconstruction method $\mathcal{R}$ and make use of the initial reconstruction $\mathcal{R}(U)$. Further, this initial reconstruction is interpolated to the $256 \times 256$ pixel grid. This has the practical advantage that we can implement the diffusion model as a convolutional neural network and the method is independent of the underlying mesh. 
+
+Note that the backbone of our approach used exactly the same network architecture as in our other repository.
 
 ### Diffusion models
 
